@@ -1,0 +1,235 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 0, 0, 0;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(var(--background-end-rgb))
+  )
+  rgb(var(--background-start-rgb));
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes scale-up {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-slow {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(0.95);
+    opacity: 0.7;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+@keyframes loading {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 1s ease-out forwards;
+}
+
+.animate-scale-up {
+  animation: scale-up 0.5s ease-out forwards;
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 4s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin 4s linear infinite;
+}
+
+.animate-loading {
+  animation: loading 1.5s ease-in-out infinite;
+}
+
+.animate-spin-vinyl {
+  animation: spin 3s linear infinite;
+}
+
+.animate-spin-vinyl-paused {
+  animation: spin 3s linear infinite;
+  animation-play-state: paused;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(234, 88, 12, 0.3);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(234, 88, 12, 0.5);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Gradient text */
+.text-gradient {
+  background: linear-gradient(to right, #ea580c, #f97316);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Retro grid */
+.retro-grid {
+  background-image: 
+    linear-gradient(rgba(234, 88, 12, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(234, 88, 12, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Hover effects */
+.hover-glow {
+  transition: all 0.3s ease;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 15px rgba(234, 88, 12, 0.3);
+}
+
+/* Add any other global styles */
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+@keyframes float-in {
+  0% {
+    transform: translateY(100%) rotate(0deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) rotate(360deg);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(-100%) rotate(0deg);
+  }
+  100% {
+    transform: translateX(0) rotate(360deg);
+  }
+}
+
+.album-float-in {
+  animation: float-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.album-slide-in {
+  animation: slide-in 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Vinyl effects */
+.vinyl-shine {
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 45%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 55%,
+    transparent 100%
+  );
+  animation: shine 4s linear infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.vinyl-grooves {
+  background: repeating-radial-gradient(
+    circle at center,
+    rgba(0, 0, 0, 0.8) 0px,
+    rgba(0, 0, 0, 0.9) 1px,
+    rgba(0, 0, 0, 0.8) 2px
+  );
+}
+
+.vinyl-label {
+  background: radial-gradient(
+    circle at center,
+    rgba(234, 88, 12, 1) 0%,
+    rgba(234, 88, 12, 0.8) 70%,
+    rgba(234, 88, 12, 0.6) 100%
+  );
+}

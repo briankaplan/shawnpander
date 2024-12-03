@@ -1,0 +1,86 @@
+.vinyl-animation-container {
+  perspective: 1000px;
+}
+
+.vinyl-arm {
+  position: absolute;
+  top: 0;
+  right: 20%;
+  width: 100px;
+  height: 200px;
+  transform-origin: top right;
+  z-index: 10;
+}
+
+.arm-base {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 30px;
+  height: 30px;
+  background: #333;
+  border-radius: 50%;
+}
+
+.arm-body {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 4px;
+  height: 150px;
+  background: #444;
+  transform: rotate(-45deg);
+  transform-origin: top;
+}
+
+.needle {
+  position: absolute;
+  bottom: 20px;
+  right: -2px;
+  width: 8px;
+  height: 15px;
+  background: #666;
+  transform: rotate(45deg);
+}
+
+.vinyl-record-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.vinyl-record {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #000;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.vinyl-grooves {
+  position: absolute;
+  inset: 0;
+  background: repeating-radial-gradient(
+    circle at center,
+    #333 0px,
+    #333 1px,
+    #222 1px,
+    #222 2px
+  );
+}
+
+.vinyl-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 35%;
+  height: 35%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid #000;
+} 
