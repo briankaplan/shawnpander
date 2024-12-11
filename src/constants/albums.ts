@@ -1,8 +1,31 @@
-export const ALBUM_IDS = {
-  FOREVER_AND_FOR_NOW: '4Ew9gKWzGqvnV0WSpbZnKh',
-  NOTES_FROM_HOOVER: '0tHnQCxrQd2YKHs1GM8dkX',
-  BEING_HERE: '1HwgXaQslHJVsJFWjWnGV2',
-  // Add other albums as needed
-} as const
+import type { Album } from '@/types/music'
 
-export const FEATURED_ALBUM_ID = ALBUM_IDS.FOREVER_AND_FOR_NOW 
+export const ALBUMS: Album[] = [
+  {
+    id: 'forever-and-for-now',
+    title: 'Forever & For Now',
+    artwork: '/images/albums/forever-and-for-now.webp',
+    releaseDate: '2024-03-15',
+    tracks: [
+      {
+        id: 'track-1',
+        title: "Let's Just Groove",
+        duration: 225,
+        side: 'A',
+        position: 1
+      },
+      {
+        id: 'track-2',
+        title: 'Forever & For Now',
+        duration: 198,
+        side: 'A',
+        position: 2
+      }
+    ],
+    streamingLinks: {
+      spotify: 'https://open.spotify.com/album/forever-and-for-now',
+      appleMusic: 'https://music.apple.com/album/forever-and-for-now',
+      youtube: 'https://youtube.com/playlist/forever-and-for-now'
+    }
+  }
+] 

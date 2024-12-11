@@ -40,3 +40,12 @@ export const audioConfig = {
   minDecibels: -100,
   maxDecibels: -30,
 }
+
+export function formatDate(dateString: string) {
+  const date = new Date(dateString)
+  return {
+    day: date.getDate(),
+    month: date.toLocaleString('default', { month: 'short' }),
+    year: date.getFullYear()
+  }
+}

@@ -1,71 +1,61 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import { useAlbumMetadata } from '@/hooks/useAlbumMetadata'
-import { useSpotifyAuth } from '@/hooks/useSpotifyAuth'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useMusicPlatform } from '@/contexts/MusicPlatformContext'
+import { VinylBackground } from '@/components/ui/VinylBackground'
+import { Skeleton } from '@/components/ui/Skeleton'
 
-interface VinylProps {
-  selectedAlbumId: string
-}
-
-const Vinyl: React.FC<VinylProps> = ({ selectedAlbumId }) => {
-  const { metadata, loading } = useAlbumMetadata(selectedAlbumId)
-  const { isAuthenticated, login } = useSpotifyAuth()
-  const { isPlaying, togglePlayPause } = useMusicPlatform()
-  const [rotation, setRotation] = useState(0)
+export function Vinyl() {
+  const [mounted, setMounted] = useState(false)
+  const { currentAlbum, isPlaying, albums } = useMusicPlatform()
+  const [selectedAlbum, setSelectedAlbum] = useState(currentAlbum || albums[0])
 
   useEffect(() => {
-    let animationFrame: number
+    setMounted(true)
+  }, [])
 
-    const animate = () => {
-      if (isPlaying) {
-        setRotation((prev) => (prev + 1) % 360)
-        animationFrame = requestAnimationFrame(animate)
-      }
+  useEffect(() => {
+    if (currentAlbum) {
+      setSelectedAlbum(currentAlbum)
     }
+  }, [currentAlbum])
 
-    if (isPlaying) {
-      animationFrame = requestAnimationFrame(animate)
-    }
-
-    return () => {
-      if (animationFrame) {
-        cancelAnimationFrame(animationFrame)
-      }
-    }
-  }, [isPlaying])
-
-  const handlePlay = () => {
-    if (!isAuthenticated) {
-      login()
-      return
-    }
-
-    togglePlayPause()
-  }
-
-  if (loading || !metadata) {
-    return <div>Loading...</div>
-  }
+  if (!mounted) return <Skeleton className="w-full aspect-square rounded-full" />
 
   return (
-    <div className="vinyl-container">
-      <div
-        className="vinyl"
-        style={{
-          transform: `rotate(${rotation}deg)`,
-        }}
-        onClick={handlePlay}
-      >
-        <img
-          src={metadata.artwork}
-          alt={metadata.name}
-          className="vinyl-artwork"
-        />
+    <div className="relative w-full max-w-xl mx-auto">
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={selectedAlbum.id}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.5 }}
+          className="relative aspect-square"
+        >
+          <VinylBackground
+            imageUrl={selectedAlbum.artwork}
+            isPlaying={isPlaying}
+            className="w-full"
+          />
+        </motion.div>
+      </AnimatePresence>
+
+      {/* Album Selection */}
+      <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        {albums.map(album => (
+          <button
+            key={album.id}
+            onClick={() => setSelectedAlbum(album)}
+            className={`w-3 h-3 rounded-full transition-colors ${
+              selectedAlbum.id === album.id
+                ? 'bg-white'
+                : 'bg-white/20 hover:bg-white/40'
+            }`}
+          />
+        ))}
       </div>
     </div>
   )
 }
-
-export default Vinyl

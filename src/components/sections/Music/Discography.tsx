@@ -1,95 +1,98 @@
 'use client'
 
-import React from 'react'
-import { useContext } from 'react'
-import { MusicPlatformContext } from '@/contexts/MusicPlatformContext'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import 'swiper/css'
-import 'swiper/css/effect-coverflow'
+import { motion } from 'framer-motion'
+import Image from 'next/image'
+import { StreamingLink } from '@/components/ui/StreamingLink'
 
 interface Album {
   id: string
   title: string
-  release_date: string
-  cover_url: string
-  spotify_id: string
-  apple_music_url?: string
-  tidal_url?: string
-  deezer_url?: string
-  tracks: Track[]
-  liner_notes?: string
-  credits?: string
+  year: string
+  coverUrl: string
+  streamingLinks: {
+    spotify?: string
+    appleMusic?: string
+    youtube?: string
+    amazon?: string
+  }
 }
 
-interface Track {
-  id: string
-  title: string
-  duration: string
-  spotify_uri: string
-  side: 'A' | 'B'
-  position: number
-}
-
-// Local data for now
 const albums: Album[] = [
   {
-    id: '1',
+    id: 'forever-and-for-now',
     title: 'Forever & For Now',
-    release_date: '2023-12-22',
-    cover_url: '/images/albums/Forever_and_for_now.webp',
-    spotify_id: '5msMT1CsExJLdv96xtMwXE',
-    apple_music_url: 'https://music.apple.com/artist/shawn-pander',
-    tracks: [
-      {
-        id: '1',
-        title: "Let's Just Groove",
-        duration: '3:45',
-        spotify_uri: 'spotify:track:xxx',
-        side: 'A',
-        position: 1
-      },
-      // Add more tracks as needed
-    ],
-    liner_notes: 'Coming December 22nd',
-    credits: 'Produced by Shawn Pander'
-  }
+    year: '2023',
+    coverUrl: '/images/albums/forever-and-for-now.jpg',
+    streamingLinks: {
+      spotify: 'https://open.spotify.com/album/xxx',
+      appleMusic: 'https://music.apple.com/album/xxx',
+      youtube: 'https://music.youtube.com/playlist/xxx',
+      amazon: 'https://music.amazon.com/albums/xxx'
+    }
+  },
+  // Add more albums here
 ]
 
-export default function Discography() {
-  const { setCurrentAlbum, currentAlbum } = useContext(MusicPlatformContext)
-
+export function Discography() {
   return (
-    <div className="jukebox-container">
-      <Swiper
-        effect="coverflow"
-        grabCursor={true}
-        centeredSlides={true}
-        slidesPerView={3}
-        coverflowEffect={{
-          rotate: 50,
-          stretch: 0,
-          depth: 100,
-          modifier: 1,
-          slideShadows: true,
-        }}
-        className="album-swiper"
-      >
-        {albums.map((album) => (
-          <SwiperSlide 
-            key={album.id}
-            onClick={() => setCurrentAlbum(album)}
-            className={`cursor-pointer transition-all duration-300 ${
-              currentAlbum?.id === album.id ? 'scale-110' : ''
-            }`}
-          >
-            <img 
-              src={album.cover_url} 
-              alt={album.title}
-              className="w-full h-full object-cover rounded-lg"
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {albums.map((album, index) => (
+        <motion.div
+          key={album.id}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1 }}
+          className="group"
+        >
+          <div className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-lg overflow-hidden">
+            {/* Album Cover */}
+            <div className="relative aspect-square">
+              <Image
+                src={album.coverUrl}
+                alt={album.title}
+                fill
+                className="object-cover"
+              />
+            </div>
+
+            {/* Album Info */}
+            <div className="p-4 space-y-4">
+              <div>
+                <h3 className="text-xl font-bold text-white">{album.title}</h3>
+                <p className="text-white/60">{album.year}</p>
+              </div>
+
+              {/* Streaming Links */}
+              <div className="space-y-2">
+                {album.streamingLinks.spotify && (
+                  <StreamingLink
+                    platform="spotify"
+                    href={album.streamingLinks.spotify}
+                  />
+                )}
+                {album.streamingLinks.appleMusic && (
+                  <StreamingLink
+                    platform="apple"
+                    href={album.streamingLinks.appleMusic}
+                  />
+                )}
+                {album.streamingLinks.youtube && (
+                  <StreamingLink
+                    platform="youtube"
+                    href={album.streamingLinks.youtube}
+                  />
+                )}
+                {album.streamingLinks.amazon && (
+                  <StreamingLink
+                    platform="amazon"
+                    href={album.streamingLinks.amazon}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      ))}
     </div>
   )
 } 

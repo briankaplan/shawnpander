@@ -1,8 +1,19 @@
-import '@/styles/globals.css'
-import { Navigation } from '@/components/Navigation'
-import { ErrorBoundary } from '@/components/ErrorBoundary'
-import { MusicPlatformProvider } from '@/contexts/MusicPlatformContext'
-import { Toaster } from 'sonner'
+import type { Metadata } from 'next'
+import { MainLayout } from '@/components/layouts/MainLayout'
+import { CONFIG } from '@/config'
+import './globals.css'
+
+export const metadata: Metadata = {
+  title: CONFIG.site.name,
+  description: CONFIG.site.description,
+  openGraph: {
+    title: CONFIG.site.name,
+    description: CONFIG.site.description,
+    url: CONFIG.site.url,
+    siteName: CONFIG.site.name,
+    type: 'website'
+  }
+}
 
 export default function RootLayout({
   children,
@@ -10,17 +21,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark scroll-smooth">
-      <body className="bg-black text-white antialiased">
-        <ErrorBoundary>
-          <MusicPlatformProvider>
-            <div className="flex min-h-screen flex-col">
-              <Navigation className="fixed top-0 left-0 right-0 z-50" />
-              {children}
-            </div>
-          </MusicPlatformProvider>
-        </ErrorBoundary>
-        <Toaster position="top-right" />
+    <html lang="en">
+      <body className="bg-black text-white">
+        <MainLayout>{children}</MainLayout>
       </body>
     </html>
   )

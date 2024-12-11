@@ -3,53 +3,26 @@
 import { forwardRef } from 'react'
 import { cn } from '@/lib/utils'
 
-interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
-  variant?: 'default' | 'circular' | 'text' | 'image'
-  width?: string | number
-  height?: string | number
-  animate?: boolean
+interface SkeletonProps {
+  className?: string
+  variant?: 'default' | 'text' | 'circular' | 'rectangular'
 }
 
 export const Skeleton = forwardRef<HTMLDivElement, SkeletonProps>(
-  ({
-    variant = 'default',
-    width,
-    height,
-    animate = true,
-    className,
-    ...props
-  }, ref) => {
-    // Base styles
-    const baseStyles = cn(
-      "relative overflow-hidden",
-      "bg-zinc-800/50",
-      animate && "after:absolute after:inset-0",
-      animate && "after:translate-x-[-100%]",
-      animate && "after:animate-shimmer",
-      animate && "after:bg-gradient-to-r",
-      animate && "after:from-transparent after:via-zinc-700/10 after:to-transparent"
-    )
-
-    // Variant styles
+  ({ className = '', variant = 'default' }, ref) => {
+    const baseStyles = 'animate-pulse bg-gradient-to-r from-zinc-800 to-zinc-700'
+    
     const variantStyles = {
-      default: "rounded-lg",
-      circular: "rounded-full",
-      text: "rounded h-4 w-full",
-      image: "rounded-lg aspect-video"
-    }
-
-    // Size styles
-    const sizeStyles = {
-      width: width ? (typeof width === 'number' ? `${width}px` : width) : 'auto',
-      height: height ? (typeof height === 'number' ? `${height}px` : height) : 'auto'
+      default: 'rounded',
+      text: 'h-4 rounded',
+      circular: 'rounded-full',
+      rectangular: 'rounded-none'
     }
 
     return (
-      <div
+      <div 
         ref={ref}
-        className={cn(baseStyles, variantStyles[variant], className)}
-        style={sizeStyles}
-        {...props}
+        className={cn(baseStyles, variantStyles[variant], className)} 
       />
     )
   }
@@ -126,9 +99,9 @@ export const CardSkeleton = forwardRef<HTMLDivElement, CardSkeletonProps>(
       >
         {hasImage && (
           <Skeleton
-            variant="image"
-            height={imageHeight}
-            className="w-full"
+            variant="rectangular"
+            style={{ height: imageHeight }}
+            className="w-full rounded-lg"
           />
         )}
         {hasTitle && (

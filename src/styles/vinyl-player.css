@@ -1,5 +1,6 @@
 .vinyl-player {
-  @apply relative flex flex-col items-center;
+  @apply relative;
+  perspective: 1000px;
 }
 
 .vinyl-base {
@@ -136,5 +137,26 @@
     &:not(.swiper-slide-active) {
       @apply opacity-50;
     }
+  }
+}
+
+.record-shine {
+  background: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 45%,
+    rgba(255, 255, 255, 0.2) 50%,
+    rgba(255, 255, 255, 0.1) 55%,
+    transparent 100%
+  );
+  animation: shine 4s linear infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 } 

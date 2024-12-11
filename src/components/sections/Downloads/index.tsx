@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { FileText, FileImage, FileArchive, Download, ArrowLeft } from 'lucide-react'
-import Link from 'next/link'
+import { LinkComponent } from '@/components/ui/Link'
 
 interface DownloadItem {
   title: string
@@ -114,15 +114,10 @@ export function DownloadsSection() {
     <div className="min-h-screen bg-gradient-to-b from-black via-orange-950/5 to-black py-32">
       <div className="container mx-auto px-4">
         <div className="mb-12">
-          <Link href="/#about" passHref>
-            <motion.a
-              className="inline-flex items-center gap-2 text-orange-400 hover:text-orange-300 transition-colors"
-              whileHover={{ x: -5 }}
-            >
-              <ArrowLeft className="w-5 h-5" />
-              Back to About
-            </motion.a>
-          </Link>
+          <LinkComponent href="/#about">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Home
+          </LinkComponent>
           <h1 className="text-4xl font-bold text-white mt-6">Press Kit & Downloads</h1>
           <p className="text-white/60 mt-4">
             Download high-resolution photos, press materials, and technical requirements.

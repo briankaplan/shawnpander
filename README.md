@@ -13,7 +13,7 @@ Official website for musician Shawn Pander, featuring music playback, tour dates
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/shawn-pander-site.git
+git clone https://github.com/briankaplan/shawnpander.git
 cd shawn-pander-site
 ```
 

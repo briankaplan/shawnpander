@@ -1,33 +1,20 @@
-type ErrorWithMessage = {
-  message: string
+type ErrorInfo = {
+  error: Error
+  errorInfo?: React.ErrorInfo
+  context?: string
 }
 
-function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
-  return (
-    typeof error === 'object' &&
-    error !== null &&
-    'message' in error &&
-    typeof (error as Record<string, unknown>).message === 'string'
-  )
-}
+export function logError({ error, errorInfo, context }: ErrorInfo) {
+  console.error('Error occurred:', {
+    message: error.message,
+    stack: error.stack,
+    componentStack: errorInfo?.componentStack,
+    context
+  })
 
-function toErrorWithMessage(maybeError: unknown): ErrorWithMessage {
-  if (isErrorWithMessage(maybeError)) return maybeError
-
-  try {
-    return new Error(JSON.stringify(maybeError))
-  } catch {
-    // fallback in case there's an error stringifying the maybeError
-    // like with circular references for example.
-    return new Error(String(maybeError))
+  // In development, show more details
+  if (process.env.NODE_ENV === 'development') {
+    console.error('Full error:', error)
+    console.error('Component stack:', errorInfo?.componentStack)
   }
-}
-
-export function getErrorMessage(error: unknown) {
-  return toErrorWithMessage(error).message
-}
-
-export function logError(error: unknown) {
-  // Here you would normally send to your error tracking service
-  console.error('Application error:', getErrorMessage(error))
 } 

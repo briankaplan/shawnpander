@@ -1,24 +1,22 @@
 'use client'
 
-import DynamicHeader from './DynamicHeader'
-import { MusicSection } from './Music'
-import { ShowsSection } from './Shows'
-import { AboutSection } from './About'
-import { Contact } from './Contact'
-import { Announcement } from './Landing/Announcement'
+import { MusicSection } from '@/components/sections/Music'
+import { ShowsSection } from '@/components/sections/Shows'
+import { PressSection } from '@/components/sections/Press'
+import { ConnectSection } from '@/components/sections/Connect'
+import { Hero } from '@/components/sections/Hero'
+import { CONFIG } from '@/config'
 
 export function MainContent() {
+  const { sections } = CONFIG.site
+
   return (
-    <main className="relative z-10 flex min-h-screen flex-col bg-gradient-to-b from-black via-orange-950/5 to-black">
-      <DynamicHeader />
-      
-      <div className="relative z-20 space-y-8">
-        <ShowsSection />
-        <MusicSection />
-        <AboutSection />
-        <Announcement />
-        <Contact />
-      </div>
+    <main>
+      <Hero />
+      {sections.music.enabled && <MusicSection />}
+      {sections.shows.enabled && <ShowsSection />}
+      {sections.press.enabled && <PressSection />}
+      {sections.connect.enabled && <ConnectSection />}
     </main>
   )
 }

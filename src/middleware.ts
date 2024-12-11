@@ -1,50 +1,32 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { NextResponse, type NextRequest } from 'next/server'
-import type { Database } from '@/types/supabase'
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
 
-const supabaseUrl = 'https://nthsogplglnizgjacbqg.supabase.co'
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im50aHNvZ3BsZ2xuaXpnamFjYnFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzMwOTc2MTYsImV4cCI6MjA0ODY3MzYxNn0.5dh0swZxwaJ8Vby14CqWh1Y5_f_G6lIyaRmpwW2XsZY'
+export function middleware(request: NextRequest) {
+  // Add CORS headers for API routes
+  if (request.nextUrl.pathname.startsWith('/api/')) {
+    const response = NextResponse.next()
+    
+    response.headers.set('Access-Control-Allow-Origin', '*')
+    response.headers.set(
+      'Access-Control-Allow-Methods',
+      'GET, POST, PUT, DELETE, OPTIONS'
+    )
+    response.headers.set(
+      'Access-Control-Allow-Headers',
+      'Content-Type, Authorization'
+    )
 
-export async function middleware(request: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
-  })
-
-  const supabase = createServerClient<Database>(
-    supabaseUrl,
-    supabaseAnonKey,
-    {
-      cookies: {
-        get(name: string) {
-          return request.cookies.get(name)?.value
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          })
-        },
-        remove(name: string, options: CookieOptions) {
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
-          })
-        },
-      },
+    // Cache control for token endpoints
+    if (request.nextUrl.pathname.includes('/token')) {
+      response.headers.set('Cache-Control', 'no-store')
     }
-  )
 
-  await supabase.auth.getSession()
+    return response
+  }
 
-  return response
+  return NextResponse.next()
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|public|images|icons).*)',
-  ],
+  matcher: ['/api/:path*']
 }

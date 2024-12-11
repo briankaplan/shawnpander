@@ -1,69 +1,41 @@
-const CRYPTO_KEY = process.env.NEXT_PUBLIC_CRYPTO_KEY!
-const IV_LENGTH = 16
+import { createCipheriv, createDecipheriv, randomBytes } from 'crypto'
 
-export function generateIV(): Uint8Array {
-  return crypto.getRandomValues(new Uint8Array(IV_LENGTH))
-}
+const ALGORITHM = 'aes-256-gcm'
+const IV_LENGTH = 12
+const SALT_LENGTH = 16
+const TAG_LENGTH = 16
 
 export async function encrypt(text: string): Promise<string> {
-  if (typeof window === 'undefined') return text
+  const iv = randomBytes(IV_LENGTH)
+  const salt = randomBytes(SALT_LENGTH)
+  const key = Buffer.from(process.env.TOKEN_SECRET!, 'base64')
 
-  try {
-    const encoder = new TextEncoder()
-    const data = encoder.encode(text)
-    const iv = generateIV()
-    const key = await crypto.subtle.importKey(
-      'raw',
-      encoder.encode(CRYPTO_KEY),
-      { name: 'AES-GCM' },
-      false,
-      ['encrypt']
-    )
+  const cipher = createCipheriv(ALGORITHM, key, iv)
+  
+  let encrypted = cipher.update(text, 'utf8', 'hex')
+  encrypted += cipher.final('hex')
+  
+  const tag = cipher.getAuthTag()
 
-    const encrypted = await crypto.subtle.encrypt(
-      { name: 'AES-GCM', iv },
-      key,
-      data
-    )
-
-    const encryptedArray = new Uint8Array(encrypted)
-    const result = new Uint8Array(iv.length + encryptedArray.length)
-    result.set(iv)
-    result.set(encryptedArray, iv.length)
-
-    return btoa(String.fromCharCode(...result))
-  } catch (error) {
-    console.error('Encryption failed:', error)
-    return text
-  }
+  const result = Buffer.concat([salt, iv, tag, Buffer.from(encrypted, 'hex')])
+  return result.toString('base64')
 }
 
-export async function decrypt(encoded: string): Promise<string> {
-  if (typeof window === 'undefined') return encoded
-
-  try {
-    const decoder = new TextDecoder()
-    const data = Uint8Array.from(atob(encoded), c => c.charCodeAt(0))
-    const iv = data.slice(0, IV_LENGTH)
-    const encrypted = data.slice(IV_LENGTH)
-
-    const key = await crypto.subtle.importKey(
-      'raw',
-      new TextEncoder().encode(CRYPTO_KEY),
-      { name: 'AES-GCM' },
-      false,
-      ['decrypt']
-    )
-
-    const decrypted = await crypto.subtle.decrypt(
-      { name: 'AES-GCM', iv },
-      key,
-      encrypted
-    )
-
-    return decoder.decode(decrypted)
-  } catch (error) {
-    console.error('Decryption failed:', error)
-    return encoded
-  }
+export async function decrypt(encryptedText: string): Promise<string> {
+  const buffer = Buffer.from(encryptedText, 'base64')
+  
+  const salt = buffer.subarray(0, SALT_LENGTH)
+  const iv = buffer.subarray(SALT_LENGTH, SALT_LENGTH + IV_LENGTH)
+  const tag = buffer.subarray(SALT_LENGTH + IV_LENGTH, SALT_LENGTH + IV_LENGTH + TAG_LENGTH)
+  const content = buffer.subarray(SALT_LENGTH + IV_LENGTH + TAG_LENGTH)
+  
+  const key = Buffer.from(process.env.TOKEN_SECRET!, 'base64')
+  const decipher = createDecipheriv(ALGORITHM, key, iv)
+  
+  decipher.setAuthTag(tag)
+  
+  let decrypted = decipher.update(content)
+  decrypted = Buffer.concat([decrypted, decipher.final()])
+  
+  return decrypted.toString('utf8')
 } 

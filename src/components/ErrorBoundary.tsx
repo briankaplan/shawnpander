@@ -6,6 +6,7 @@ import { logError } from '@/lib/errorHandler'
 
 interface Props {
   children: React.ReactNode
+  fallback?: React.ReactNode
 }
 
 interface State {
@@ -14,22 +15,32 @@ interface State {
 }
 
 export class ErrorBoundary extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.state = { hasError: false, error: null }
+  public state: State = {
+    hasError: false,
+    error: null
   }
 
-  static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error }
+  public static getDerivedStateFromError(error: Error): State {
+    return {
+      hasError: true,
+      error
+    }
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  public componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     logError({ error, errorInfo })
   }
 
-  render() {
+  private handleReset = () => {
+    this.setState({
+      hasError: false,
+      error: null
+    })
+  }
+
+  public render() {
     if (this.state.hasError) {
-      return (
+      return this.props.fallback || (
         <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -42,7 +53,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
             </p>
             <div className="flex gap-4">
               <button
-                onClick={() => this.setState({ hasError: false, error: null })}
+                onClick={this.handleReset}
                 className="px-6 py-3 bg-orange-500 text-white rounded-full hover:bg-orange-600 transition-colors"
               >
                 Try again
